@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/giveaway
+    username: giveaway
+    password: giveawayPassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+app:
+  controllers:
+    page-size: 10
+  websocket:
+    allowed-origins: http://localhost:3000
+    destinations:
+      giveaway-added: "/topic/giveaways"
+      giveaway-consumed: "/topic/giveaways/consumed"
