@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.kravuar.giveaways.application.props.ControllersProps;
 import net.kravuar.giveaways.application.services.GiveawayService;
-import net.kravuar.giveaways.domain.dto.NewGiveawayDTO;
+import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
 import net.kravuar.giveaways.domain.messages.GiveawayMessage;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -25,9 +25,9 @@ public class GiveawayController {
     private final ControllersProps controllersProps;
 
     @GetMapping(value = {"/giveaways/{page}/{pageSize}", "/giveaways/{page}/"})
-    public Collection<GiveawayMessage> findVisibleByPage(Principal principal, @PathVariable Integer page, @PathVariable Optional<Integer> pageSize) {
+    public Collection<GiveawayMessage> findVisibleByPage(String username, @PathVariable Integer page, @PathVariable Optional<Integer> pageSize) {
         return giveawayService.findVisible(
-                principal.getName(),
+                username,
                 PageRequest.of(page, pageSize.orElse(controllersProps.pageSize))
         ).stream()
                 .map(GiveawayMessage::new)
@@ -35,17 +35,17 @@ public class GiveawayController {
     }
 
     @SubscribeMapping("/giveaways")
-    public Collection<GiveawayMessage> retrieveGiveawaysHistory(Principal principal) {
-        return findVisibleByPage(principal, 0, Optional.empty());
+    public Collection<GiveawayMessage> initHistory(Principal principal) {
+        return findVisibleByPage(principal.getName(), 0, Optional.empty());
     }
 
     @MessageMapping("/giveaways")
-    public void addGiveaway(@Valid NewGiveawayDTO newGiveawayDTO, Principal principal) {
-        giveawayService.tryAddByUser(newGiveawayDTO, principal.getName());
+    public void addGiveaway(Principal principal, @Valid GiveawayFormDTO giveawayFormDTO) {
+        giveawayService.addByUser(giveawayFormDTO, principal.getName());
     }
 
     @MessageMapping("/giveaways/{id}/apply")
-    public void useGiveaway(@DestinationVariable String id, Principal principal) {
-        giveawayService.tryConsumeByUser(id, principal.getName());
+    public void useGiveaway(Principal principal, @DestinationVariable String id) {
+        giveawayService.consumeByUser(id, principal.getName());
     }
 }

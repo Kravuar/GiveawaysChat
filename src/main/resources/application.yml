@@ -13,5 +13,6 @@ app:
   websocket:
     allowed-origins: http://localhost:3000
     destinations:
+      notifications: "/topic/notification"
       giveaway-added: "/topic/giveaways"
       giveaway-consumed: "/topic/giveaways/consumed"

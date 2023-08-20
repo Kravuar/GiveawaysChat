@@ -3,10 +3,13 @@ package net.kravuar.giveaways.application.services;
 import lombok.RequiredArgsConstructor;
 import net.kravuar.giveaways.application.props.DestinationsProps;
 import net.kravuar.giveaways.application.repo.GiveawayRepository;
-import net.kravuar.giveaways.domain.dto.NewGiveawayDTO;
+import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
 import net.kravuar.giveaways.domain.exceptions.GiveawayExhaustedException;
 import net.kravuar.giveaways.domain.exceptions.GiveawayIsPrivateException;
 import net.kravuar.giveaways.domain.exceptions.ResourceNotFoundException;
+import net.kravuar.giveaways.domain.messages.GiveawayCounterDecreaseMessage;
+import net.kravuar.giveaways.domain.messages.GiveawayMessage;
+import net.kravuar.giveaways.domain.messages.UserSuccessfullyConsumedGiveawayMessage;
 import net.kravuar.giveaways.domain.model.Giveaway;
 import net.kravuar.giveaways.domain.model.User;
 import org.springframework.data.domain.Pageable;
@@ -19,16 +22,16 @@ import java.util.Collection;
 @Transactional
 @RequiredArgsConstructor
 public class GiveawayService {
-    private final MessagesService messagesService;
+    private final MessageService messageService;
     private final DestinationsProps destinationsProps;
     private final GiveawayRepository giveawayRepository;
     private final UserService userService;
 
     public Collection<Giveaway> findVisible(String username, Pageable pageable) {
-        var user = userService.getByUsername(username);
+        var user = userService.findByUsername(username);
 
         if (user == null)
-            throw new ResourceNotFoundException(username, "user", username);
+            throw new ResourceNotFoundException("user", username);
 
         var subscribedTo = user.getSubscriptions().stream().map(User::getId).toList();
         return giveawayRepository
@@ -40,44 +43,53 @@ public class GiveawayService {
         return giveawayRepository.findById(giveawayId).orElse(null);
     }
 
-    public void tryAddByUser(NewGiveawayDTO newGiveawayDTO, String username) {
-        var user = userService.getByUsername(username);
+    public void addByUser(GiveawayFormDTO giveawayFormDTO, String username) {
+        var totalCost = giveawayFormDTO.getAmount() * giveawayFormDTO.getCount();
+        userService.updateBalance(username, -totalCost);
 
-        if (user == null)
-            throw new ResourceNotFoundException(username, "user", username);
-
-        var totalCost = newGiveawayDTO.getAmount() * newGiveawayDTO.getCount();
-        userService.updateBalance(user, -totalCost);
-
-        var giveaway = new Giveaway(user, newGiveawayDTO);
+        var giveaway = new Giveaway(userService.findByUsername(username), giveawayFormDTO);
         giveaway = giveawayRepository.save(giveaway);
 
         if (giveaway.getIsPrivate())
-            messagesService.sendNewPrivateGiveaway(giveaway, destinationsProps.giveawayAdded);
+            messageService.sendToUser(
+                    username,
+                    destinationsProps.giveawayAdded,
+                    new GiveawayMessage(giveaway)
+            );
         else
-            messagesService.sendNewPublicGiveaway(giveaway, destinationsProps.giveawayAdded);
+            messageService.send(
+                    destinationsProps.giveawayAdded,
+                    new GiveawayMessage(giveaway)
+            );
     }
 
-    public void tryConsumeByUser(String giveawayId, String username) {
+    public void consumeByUser(String giveawayId, String username) {
         var giveaway = findById(giveawayId);
-        var user = userService.getByUsername(username);
+        var user = userService.findByUsername(username);
 
         if (giveaway == null)
-            throw new ResourceNotFoundException(username, "giveaway", giveawayId);
+            throw new ResourceNotFoundException("giveaway", giveawayId);
 
         if (user == null)
-            throw new ResourceNotFoundException(username, "user", username);
+            throw new ResourceNotFoundException("user", username);
 
         if (giveaway.getCount() > 0)
             if (!giveaway.getIsPrivate() || giveaway.getOwner().getSubscribers().contains(user)) {
                 giveaway.setCount(giveaway.getCount() - 1);
                 user.setBalance(user.getBalance() + giveaway.getAmount());
-                messagesService.sendCounterDecrease(giveawayId, destinationsProps.giveawayConsumed);
-                messagesService.sendUserSuccessfullyConsumedGiveaway(username, giveawayId, destinationsProps.giveawayConsumed);
+                messageService.send(
+                        destinationsProps.giveawayConsumed,
+                        new GiveawayCounterDecreaseMessage(giveawayId)
+                );
+                messageService.sendToUser(
+                        username,
+                        destinationsProps.notifications,
+                        new UserSuccessfullyConsumedGiveawayMessage(giveawayId)
+                );
             }
             else
-                throw new GiveawayIsPrivateException(username);
+                throw new GiveawayIsPrivateException();
         else
-            throw new GiveawayExhaustedException(username);
+            throw new GiveawayExhaustedException();
     }
 }

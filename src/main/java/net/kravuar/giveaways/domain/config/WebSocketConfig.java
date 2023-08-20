@@ -22,7 +22,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-//        addInterceptors for authentication
+//        TODO: addInterceptors for authentication
+//        TODO: addInterceptors for subscribe validation upon db
         registry.addEndpoint("/giveaways-connect")
                 .setAllowedOrigins(webSocketProps.allowedOrigins.toArray(new String[0]))
                 .withSockJS();

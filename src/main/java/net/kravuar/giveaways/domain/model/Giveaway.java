@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
-import net.kravuar.giveaways.domain.dto.NewGiveawayDTO;
+import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
 import org.springframework.data.annotation.Id;
 
 import java.time.ZonedDateTime;
@@ -31,7 +31,7 @@ public class Giveaway {
     @Column(nullable = false)
     private Boolean isPrivate;
 
-    public Giveaway(User user, NewGiveawayDTO giveawayDTO) {
+    public Giveaway(User user, GiveawayFormDTO giveawayDTO) {
         this.owner = user;
         this.amount = giveawayDTO.getAmount();
         this.count = giveawayDTO.getCount();

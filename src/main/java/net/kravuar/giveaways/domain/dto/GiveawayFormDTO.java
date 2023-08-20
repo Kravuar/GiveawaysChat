@@ -8,7 +8,7 @@ import lombok.Data;
 import java.time.ZonedDateTime;
 
 @Data
-public class NewGiveawayDTO {
+public class GiveawayFormDTO {
     @Min(1)
     private final Long amount;
     @Min(1)
