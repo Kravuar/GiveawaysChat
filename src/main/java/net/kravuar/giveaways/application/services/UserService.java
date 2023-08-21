@@ -18,15 +18,19 @@ public class UserService {
     private final MessageService messageService;
     private final DestinationsProps destinationsProps;
 
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
-    public void updateBalance(String username, Long delta) {
+    public User findByUsernameOrElseThrow(String username) {
         var user = findByUsername(username);
-
         if (user == null)
             throw new ResourceNotFoundException("user", username);
+        return user;
+    }
+
+    public void updateBalance(String username, Long delta) {
+        var user = findByUsernameOrElseThrow(username);
 
         var balance = user.getBalance();
         var newBalance = balance + delta;
@@ -36,14 +40,8 @@ public class UserService {
     }
 
     public void subscribe(String subscriberUsername, String subscriptedUsername) {
-        var subscriber = findByUsername(subscriberUsername);
-        var subscripted = findByUsername(subscriptedUsername);
-
-        if (subscriber == null)
-            throw new ResourceNotFoundException("user", subscriberUsername);
-
-        if (subscripted == null)
-            throw new ResourceNotFoundException("user", subscriptedUsername);
+        var subscriber = findByUsernameOrElseThrow(subscriberUsername);
+        var subscripted = findByUsernameOrElseThrow(subscriptedUsername);
 
         var cost = subscripted.getSubscriptionCost();
         var available = subscriber.getBalance();
@@ -60,5 +58,12 @@ public class UserService {
                 destinationsProps.notifications,
                 new UserSuccessfullySubscribedMessage(subscriptedUsername)
         );
+    }
+
+    public boolean isSubscribedTo(String subscriberUsername, String subscriptedUsername) {
+        var subscriber = findByUsernameOrElseThrow(subscriberUsername);
+        var subscripted = findByUsernameOrElseThrow(subscriptedUsername);
+
+        return subscripted.getSubscribers().contains(subscriber);
     }
 }

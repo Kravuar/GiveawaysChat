@@ -28,10 +28,7 @@ public class GiveawayService {
     private final UserService userService;
 
     public Collection<Giveaway> findVisible(String username, Pageable pageable) {
-        var user = userService.findByUsername(username);
-
-        if (user == null)
-            throw new ResourceNotFoundException("user", username);
+        var user = userService.findByUsernameOrElseThrow(username);
 
         var subscribedTo = user.getSubscriptions().stream().map(User::getId).toList();
         return giveawayRepository
@@ -41,6 +38,13 @@ public class GiveawayService {
 
     public Giveaway findById(String giveawayId) {
         return giveawayRepository.findById(giveawayId).orElse(null);
+    }
+
+    public Giveaway findByIdOrElseThrow(String giveawayId) {
+        var giveaway = findById(giveawayId);
+        if (giveaway == null)
+            throw new ResourceNotFoundException("giveaway", giveawayId);
+        return giveaway;
     }
 
     public void addByUser(GiveawayFormDTO giveawayFormDTO, String username) {
@@ -64,14 +68,8 @@ public class GiveawayService {
     }
 
     public void consumeByUser(String giveawayId, String username) {
-        var giveaway = findById(giveawayId);
-        var user = userService.findByUsername(username);
-
-        if (giveaway == null)
-            throw new ResourceNotFoundException("giveaway", giveawayId);
-
-        if (user == null)
-            throw new ResourceNotFoundException("user", username);
+        var giveaway = findByIdOrElseThrow(giveawayId);
+        var user = userService.findByUsernameOrElseThrow(username);
 
         if (giveaway.getCount() > 0)
             if (!giveaway.getIsPrivate() || giveaway.getOwner().getSubscribers().contains(user)) {
