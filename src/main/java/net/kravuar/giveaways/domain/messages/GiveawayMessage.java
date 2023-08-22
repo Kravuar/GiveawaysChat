@@ -20,7 +20,7 @@ public class GiveawayMessage {
         this.id = giveaway.getId();
         this.owner = giveaway.getOwner().getUsername();
         this.amount = giveaway.getAmount();
-        this.count = giveaway.getCount();
+        this.count = giveaway.getUsages();
         this.createdAt = giveaway.getCreatedAt();
         this.expiresAt = giveaway.getExpiresAt();
         this.title = giveaway.getTitle();

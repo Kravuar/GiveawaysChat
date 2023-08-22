@@ -12,7 +12,7 @@ public class GiveawayFormDTO {
     @Min(1)
     private final Long amount;
     @Min(1)
-    private final Long count;
+    private final Long usages;
     @NotNull
     private final Boolean isPrivate;
     @NotNull

@@ -6,6 +6,7 @@ import net.kravuar.giveaways.application.repo.UserRepository;
 import net.kravuar.giveaways.domain.exceptions.InsufficientFundsException;
 import net.kravuar.giveaways.domain.exceptions.ResourceNotFoundException;
 import net.kravuar.giveaways.domain.messages.UserSuccessfullySubscribedMessage;
+import net.kravuar.giveaways.domain.model.Subscription;
 import net.kravuar.giveaways.domain.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,9 @@ public class UserService {
     private final MessageService messageService;
     private final DestinationsProps destinationsProps;
 
+//    TODO: need to remove this username binding and use id
 
+    public Iterable<User> findAll() { return userRepository.findAll(); }
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -51,7 +54,13 @@ public class UserService {
         updateBalance(subscriberUsername, -cost);
         updateBalance(subscriptedUsername, cost);
 
-        subscriber.getSubscriptions().add(subscripted);
+        var subscription = new Subscription();
+        subscription.setSubscriber(subscriber);
+        subscription.setSubscripted(subscripted);
+//        TODO: subscription duration from props
+//        TODO: allow pay for multiple periods at once
+//        subscription.setExpirationTime();
+        subscriber.getSubscriptions().add(subscription);
 
         messageService.sendToUser(
                 subscriberUsername,
@@ -60,10 +69,17 @@ public class UserService {
         );
     }
 
+    public void unsubscribe(String subscriberUsername, String subscriptedUsername) {
+//        TODO: implement unsubscribe
+    }
+
     public boolean isSubscribedTo(String subscriberUsername, String subscriptedUsername) {
         var subscriber = findByUsernameOrElseThrow(subscriberUsername);
         var subscripted = findByUsernameOrElseThrow(subscriptedUsername);
 
-        return subscripted.getSubscribers().contains(subscriber);
+//        TODO: fix excessive fetching
+        return subscriber
+                .getSubscriptions().stream()
+                .anyMatch(subscription -> subscription.getSubscripted().equals(subscripted));
     }
 }

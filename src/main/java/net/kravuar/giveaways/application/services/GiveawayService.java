@@ -48,7 +48,7 @@ public class GiveawayService {
     }
 
     public void addByUser(GiveawayFormDTO giveawayFormDTO, String username) {
-        var totalCost = giveawayFormDTO.getAmount() * giveawayFormDTO.getCount();
+        var totalCost = giveawayFormDTO.getAmount() * giveawayFormDTO.getUsages();
         userService.updateBalance(username, -totalCost);
 
         var giveaway = new Giveaway(userService.findByUsername(username), giveawayFormDTO);
@@ -71,9 +71,10 @@ public class GiveawayService {
         var giveaway = findByIdOrElseThrow(giveawayId);
         var user = userService.findByUsernameOrElseThrow(username);
 
-        if (giveaway.getCount() > 0)
+        if (giveaway.getUsagesLeft() > 0)
             if (!giveaway.getIsPrivate() || giveaway.getOwner().getSubscribers().contains(user)) {
-                giveaway.setCount(giveaway.getCount() - 1);
+                giveaway.setUsagesLeft(giveaway.getUsagesLeft() - 1);
+                giveaway.getCollected().add(user);
                 user.setBalance(user.getBalance() + giveaway.getAmount());
                 messageService.send(
                         destinationsProps.giveawayCollected,

@@ -1,13 +1,13 @@
 package net.kravuar.giveaways.domain.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
 import org.springframework.data.annotation.Id;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Table(name = "giveaways")
 @Data
@@ -18,7 +18,8 @@ public class Giveaway {
     @ManyToOne(optional = false)
     private User owner;
 
-//    TODO: Set of users that collected this giveaway
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<User> collected = new HashSet<>();
 
     @Column(nullable = false)
     private ZonedDateTime createdAt = ZonedDateTime.now();
@@ -29,14 +30,19 @@ public class Giveaway {
     @Column(nullable = false)
     private Long amount;
     @Column(nullable = false)
-    private Long count;
+    private Long usages;
     @Column(nullable = false)
     private Boolean isPrivate;
+
+//    Denormalized
+    @Column(nullable = false)
+    private Long usagesLeft;
 
     public Giveaway(User user, GiveawayFormDTO giveawayDTO) {
         this.owner = user;
         this.amount = giveawayDTO.getAmount();
-        this.count = giveawayDTO.getCount();
+        this.usages = giveawayDTO.getUsages();
+        this.usagesLeft = giveawayDTO.getUsages();
         this.expiresAt = giveawayDTO.getExpiresAt();
         this.title = giveawayDTO.getTitle();
         this.isPrivate = giveawayDTO.getIsPrivate();

@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @Table(name = "users")
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"giveaways", "subscribers", "subscriptions"})
+@EqualsAndHashCode(exclude = {"giveaways", "subscriptions"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,14 +31,6 @@ public class User {
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Giveaway> giveaways = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
-    )
-    private Set<User> subscribers = new HashSet<>();
-
-    @ManyToMany(mappedBy = "subscribers")
-    private Set<User> subscriptions = new HashSet<>();
+    @OneToMany(mappedBy = "subscriber", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<Subscription> subscriptions = new HashSet<>();
 }
