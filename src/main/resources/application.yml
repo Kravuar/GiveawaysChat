@@ -8,8 +8,6 @@ spring:
     password: giveawayPassword
     driver-class-name: com.mysql.cj.jdbc.Driver
 app:
-  controllers:
-    page-size: 10
   websocket:
     allowed-origins: http://localhost:3000
     destinations:

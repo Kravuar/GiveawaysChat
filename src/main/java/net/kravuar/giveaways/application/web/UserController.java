@@ -12,9 +12,4 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    @MessageMapping("/subscribe/{username}")
-    public void subscribe(@DestinationVariable String username, Principal principal) {
-        userService.subscribe(principal.getName(), username);
-    }
 }

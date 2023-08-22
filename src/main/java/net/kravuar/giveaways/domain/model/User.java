@@ -27,6 +27,7 @@ public class User {
     private Long subscriptionCost = null;
 
 //    TODO: Denormalize to contain count for: giveaways, subscribers, subscribed
+//    TODO: add the above to the UserDTO
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Giveaway> giveaways = new HashSet<>();

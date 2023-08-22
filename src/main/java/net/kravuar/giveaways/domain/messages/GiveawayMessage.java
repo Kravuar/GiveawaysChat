@@ -1,6 +1,7 @@
 package net.kravuar.giveaways.domain.messages;
 
 import lombok.Data;
+import net.kravuar.giveaways.domain.dto.UserDTO;
 import net.kravuar.giveaways.domain.model.Giveaway;
 
 import java.time.ZonedDateTime;
@@ -8,7 +9,7 @@ import java.time.ZonedDateTime;
 @Data
 public class GiveawayMessage {
     private final String id;
-    private final String owner;
+    private final UserDTO owner;
     private final Long amount;
     private final Long count;
     private final Boolean isPrivate;
@@ -18,7 +19,7 @@ public class GiveawayMessage {
 
     public GiveawayMessage(Giveaway giveaway) {
         this.id = giveaway.getId();
-        this.owner = giveaway.getOwner().getUsername();
+        this.owner = new UserDTO(giveaway.getOwner());
         this.amount = giveaway.getAmount();
         this.count = giveaway.getUsages();
         this.createdAt = giveaway.getCreatedAt();

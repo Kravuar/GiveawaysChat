@@ -9,6 +9,5 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 public class Advice {
     private final MessageService messageService;
 
-//    TODO: MessageExceptions with @SendToUser(broadcast=false)
-//    TODO: All exceptions should be sent to current message Authentication user
+//    TODO: MessageExceptions with @SendToUser(broadcast=false). All exceptions should be sent to current message Authentication user
 }

@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
-
-@ConfigurationProperties("app.websocket")
+@ConfigurationProperties("app.services.subscription")
 @Data
-public class WebSocketProps {
+public class SubscriptionProps {
     /*
-     * List of allowed origins.
-     * */
-    private List<String> allowedOrigins;
+    * Duration in weeks.
+    * */
+    private Integer subscriptionDuration = 4;
 }

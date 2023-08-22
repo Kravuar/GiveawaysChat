@@ -25,4 +25,7 @@ public class Subscription {
     private ZonedDateTime subscriptionTime = ZonedDateTime.now();
     @Column(nullable = false)
     private ZonedDateTime expirationTime;
+
+    @Column(nullable = false)
+    private Long cost;
 }

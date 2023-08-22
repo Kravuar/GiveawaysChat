@@ -6,15 +6,16 @@ import net.kravuar.giveaways.application.props.ControllersProps;
 import net.kravuar.giveaways.application.services.GiveawayService;
 import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
 import net.kravuar.giveaways.domain.messages.GiveawayMessage;
+import net.kravuar.giveaways.domain.model.PrincipalWithId;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -25,27 +26,27 @@ public class GiveawayController {
     private final ControllersProps controllersProps;
 
     @GetMapping(value = {"/giveaways/{page}/{pageSize}", "/giveaways/{page}/"})
-    public Collection<GiveawayMessage> findVisibleByPage(String username, @PathVariable Integer page, @PathVariable Optional<Integer> pageSize) {
+    public Collection<GiveawayMessage> findVisibleByPage(@AuthenticationPrincipal PrincipalWithId principal, @PathVariable Integer page, @PathVariable Optional<Integer> pageSize) {
         return giveawayService.findVisible(
-                username,
-                PageRequest.of(page, pageSize.orElse(controllersProps.pageSize))
+                principal.getId(),
+                PageRequest.of(page, pageSize.orElse(controllersProps.getPageSize()))
         ).stream()
                 .map(GiveawayMessage::new)
                 .toList();
     }
 
     @SubscribeMapping("/giveaways")
-    public Collection<GiveawayMessage> initHistory(Principal principal) {
-        return findVisibleByPage(principal.getName(), 0, Optional.empty());
+    public Collection<GiveawayMessage> initHistory(@AuthenticationPrincipal PrincipalWithId principal) {
+        return findVisibleByPage(principal, 0, Optional.empty());
     }
 
     @MessageMapping("/giveaways")
-    public void addGiveaway(Principal principal, @Valid GiveawayFormDTO giveawayFormDTO) {
-        giveawayService.addByUser(giveawayFormDTO, principal.getName());
+    public void addGiveaway(@AuthenticationPrincipal PrincipalWithId principal, @Valid GiveawayFormDTO giveawayFormDTO) {
+        giveawayService.addByUser(giveawayFormDTO, principal.getId());
     }
 
     @MessageMapping("/giveaways/{id}/apply")
-    public void useGiveaway(Principal principal, @DestinationVariable String id) {
-        giveawayService.collectByUser(id, principal.getName());
+    public void useGiveaway(@AuthenticationPrincipal PrincipalWithId principal, @DestinationVariable String id) {
+        giveawayService.collectByUser(id, principal.getId());
     }
 }

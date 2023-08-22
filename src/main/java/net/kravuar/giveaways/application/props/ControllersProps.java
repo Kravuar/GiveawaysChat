@@ -1,10 +1,13 @@
 package net.kravuar.giveaways.application.props;
 
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("app.controllers")
-@AllArgsConstructor
+@Data
 public class ControllersProps {
-    public Integer pageSize;
+    /*
+     * Page size for pageable queries.
+     * */
+    private Integer pageSize = 10;
 }
