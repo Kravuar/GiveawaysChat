@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Avatar, Divider, IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
 import React, { Fragment, useState } from 'react';
-import { CalendarMonth, Login, Logout, PersonAdd } from '@mui/icons-material';
+import { Login, Logout, PersonAdd } from '@mui/icons-material';
 
 type UserProfile = {
   picture?: string;
   name: string;
 };
 
-export default function ProfileComponent() {
+export default function ProfileMenu() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
@@ -47,11 +47,7 @@ export default function ProfileComponent() {
                                 <Avatar />
                                 Профиль
                             </MenuItem>,
-                            <MenuItem key="myAppointment" onClick={handleClose} to="/appointment/my" component={Link}>
-                                <CalendarMonth />
-                                Мои Записи
-                            </MenuItem>,
-                            <Divider />,
+                            <Divider key="divider" />,
                             <MenuItem key="logout" onClick={handleClose}>
                                 <ListItemIcon>
                                     <Logout />

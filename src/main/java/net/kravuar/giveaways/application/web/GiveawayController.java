@@ -46,6 +46,6 @@ public class GiveawayController {
 
     @MessageMapping("/giveaways/{id}/apply")
     public void useGiveaway(Principal principal, @DestinationVariable String id) {
-        giveawayService.consumeByUser(id, principal.getName());
+        giveawayService.collectByUser(id, principal.getName());
     }
 }

@@ -15,4 +15,4 @@ app:
     destinations:
       notifications: "/topic/notification"
       giveaway-added: "/topic/giveaways"
-      giveaway-consumed: "/topic/giveaways/consumed"
+      giveaway-collected: "/topic/giveaways/collected"

@@ -18,6 +18,8 @@ public class Giveaway {
     @ManyToOne(optional = false)
     private User owner;
 
+//    TODO: Set of users that collected this giveaway
+
     @Column(nullable = false)
     private ZonedDateTime createdAt = ZonedDateTime.now();
     @Column(nullable = false)

@@ -1,29 +1,27 @@
 import React, {useState} from 'react';
-import Giveaway from "./Giveaway";
+import Giveaway, {GiveawayProps} from "./Giveaway";
 import {useSubscription} from "react-stomp-hooks";
 import {endpoints} from "../../config/Stomp";
-
-// TODO: fix Giveaway typing
+import {parseMessage} from "../../services/UtilServices";
+import {Container, Stack} from "@mui/material";
 
 export default function GiveawaysContainer() {
-    const [giveaways, setGiveaways] = useState<Giveaway[]>([]);
-    const initSubscription = useSubscription(endpoints.historyInit, initContainer);
-    const giveawaysSubscription = useSubscription(endpoints.giveaways);
+    const [giveaways, setGiveaways] = useState<React.ReactElement<GiveawayProps>[]>([]);
+    useSubscription(endpoints.historyInit, (message) => initContainer(parseMessage<GiveawayProps[]>(message)));
+    useSubscription(endpoints.giveaways, (message) => handleNewGiveaway(parseMessage<GiveawayProps>(message)));
 
-    // TODO: Type message object
-    function initContainer(message: any) {
-
+    function initContainer(giveaways: GiveawayProps[]) {
+        setGiveaways(giveaways.map(giveawayProps => <Giveaway key={giveawayProps.id} {...giveawayProps}/>));
     }
 
-    function handleNewCard(newCard: Giveaway) {
-        setGiveaways((prevCards) => [...prevCards, newCard]);
-    };
+    function handleNewGiveaway(newGiveaway: GiveawayProps) {
+        setGiveaways((prev) => [...prev, <Giveaway key={newGiveaway.id} {...newGiveaway}/>]);
+    }
 
+    // TODO: Change container to some proper scrollable list
     return (
-        <div style={{height: '400px', overflowY: 'auto'}}>
-            {giveaways.map((card) =>
-                <Giveaway key={card.id} {...card} />
-            )}
-        </div>
+        <Container>
+            {giveaways}
+        </Container>
     );
 };

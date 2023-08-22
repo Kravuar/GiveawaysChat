@@ -1,4 +1,5 @@
 import { matchPath, useLocation } from "react-router-dom";
+import {Frame} from "stompjs";
 
 export function useRouteMatch(patterns: readonly string[]) {
     const { pathname } = useLocation();
@@ -12,4 +13,8 @@ export function useRouteMatch(patterns: readonly string[]) {
     }
 
     return null;
+}
+
+export function parseMessage<T>(message: Frame): T {
+    return JSON.parse(message.body) as T;
 }

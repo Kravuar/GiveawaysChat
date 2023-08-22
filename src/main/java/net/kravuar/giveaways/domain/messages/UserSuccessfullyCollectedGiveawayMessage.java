@@ -3,6 +3,6 @@ package net.kravuar.giveaways.domain.messages;
 import lombok.Data;
 
 @Data
-public class UserSuccessfullyConsumedGiveawayMessage {
+public class UserSuccessfullyCollectedGiveawayMessage {
     private final String giveawayId;
 }

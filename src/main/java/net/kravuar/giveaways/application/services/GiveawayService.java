@@ -9,7 +9,7 @@ import net.kravuar.giveaways.domain.exceptions.GiveawayIsPrivateException;
 import net.kravuar.giveaways.domain.exceptions.ResourceNotFoundException;
 import net.kravuar.giveaways.domain.messages.GiveawayCounterDecreaseMessage;
 import net.kravuar.giveaways.domain.messages.GiveawayMessage;
-import net.kravuar.giveaways.domain.messages.UserSuccessfullyConsumedGiveawayMessage;
+import net.kravuar.giveaways.domain.messages.UserSuccessfullyCollectedGiveawayMessage;
 import net.kravuar.giveaways.domain.model.Giveaway;
 import net.kravuar.giveaways.domain.model.User;
 import org.springframework.data.domain.Pageable;
@@ -67,7 +67,7 @@ public class GiveawayService {
             );
     }
 
-    public void consumeByUser(String giveawayId, String username) {
+    public void collectByUser(String giveawayId, String username) {
         var giveaway = findByIdOrElseThrow(giveawayId);
         var user = userService.findByUsernameOrElseThrow(username);
 
@@ -76,13 +76,13 @@ public class GiveawayService {
                 giveaway.setCount(giveaway.getCount() - 1);
                 user.setBalance(user.getBalance() + giveaway.getAmount());
                 messageService.send(
-                        destinationsProps.giveawayConsumed,
+                        destinationsProps.giveawayCollected,
                         new GiveawayCounterDecreaseMessage(giveawayId)
                 );
                 messageService.sendToUser(
                         username,
                         destinationsProps.notifications,
-                        new UserSuccessfullyConsumedGiveawayMessage(giveawayId)
+                        new UserSuccessfullyCollectedGiveawayMessage(giveawayId)
                 );
             }
             else

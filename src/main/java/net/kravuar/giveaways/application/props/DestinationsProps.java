@@ -8,5 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class DestinationsProps {
     public String notifications;
     public String giveawayAdded;
-    public String giveawayConsumed;
+    public String giveawayCollected;
 }

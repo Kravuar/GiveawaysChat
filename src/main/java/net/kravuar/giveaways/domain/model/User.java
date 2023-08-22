@@ -23,9 +23,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-
     private Long balance = 0L;
     private Long subscriptionCost = null;
+
+//    TODO: Denormalize to contain count for: giveaways, subscribers, subscribed
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Giveaway> giveaways = new HashSet<>();
