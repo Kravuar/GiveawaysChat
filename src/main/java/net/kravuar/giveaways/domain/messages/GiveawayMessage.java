@@ -2,7 +2,7 @@ package net.kravuar.giveaways.domain.messages;
 
 import lombok.Data;
 import net.kravuar.giveaways.domain.dto.UserDTO;
-import net.kravuar.giveaways.domain.model.Giveaway;
+import net.kravuar.giveaways.domain.model.giveaways.Giveaway;
 
 import java.time.ZonedDateTime;
 

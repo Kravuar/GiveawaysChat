@@ -11,4 +11,8 @@ public class SubscriptionProps {
     * Duration in weeks.
     * */
     private Integer subscriptionDuration = 4;
+    /*
+     * Subscription fee percentage.
+     * */
+    private Float subscriptionFee = 0.15F;
 }

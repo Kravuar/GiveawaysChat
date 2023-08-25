@@ -1,6 +1,6 @@
 package net.kravuar.giveaways.application.repo;
 
-import net.kravuar.giveaways.domain.model.User;
+import net.kravuar.giveaways.domain.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;

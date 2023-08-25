@@ -1,6 +1,6 @@
 package net.kravuar.giveaways.application.repo;
 
-import net.kravuar.giveaways.domain.model.Giveaway;
+import net.kravuar.giveaways.domain.model.giveaways.Giveaway;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

@@ -1,11 +1,12 @@
 package net.kravuar.giveaways.application.services;
 
 import lombok.RequiredArgsConstructor;
-import net.kravuar.giveaways.application.props.DestinationsProps;
 import net.kravuar.giveaways.application.repo.UserRepository;
+import net.kravuar.giveaways.domain.events.BalanceUpdated;
 import net.kravuar.giveaways.domain.exceptions.InsufficientFundsException;
 import net.kravuar.giveaways.domain.exceptions.ResourceNotFoundException;
-import net.kravuar.giveaways.domain.model.User;
+import net.kravuar.giveaways.domain.model.user.User;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
+    private final ApplicationEventPublisher publisher;
     private final UserRepository userRepository;
-    private final MessageService messageService;
-    private final DestinationsProps destinationsProps;
 
     public User getReferenceById(String userId) { return userRepository.getReferenceById(userId); }
-
-    public Iterable<User> findAll() { return userRepository.findAll(); }
 
     public User findByIdOrElseThrow(String userId) {
         var user = userRepository.findById(userId);
@@ -28,7 +26,7 @@ public class UserService {
         return user.get();
     }
 
-    public void updateBalance(String userId, Long delta) {
+    public Double updateBalance(String userId, Double delta) {
         var user = findByIdOrElseThrow(userId);
 
         var balance = user.getBalance();
@@ -36,11 +34,8 @@ public class UserService {
         if (newBalance <= 0)
             throw new InsufficientFundsException(delta, balance);
         user.setBalance(newBalance);
-//        TODO: notify
-    }
 
-    public void transfer(String fromUserId, String toUserId, Long delta) {
-        updateBalance(fromUserId, -delta);
-        updateBalance(toUserId, delta);
+        publisher.publishEvent(new BalanceUpdated(userId, delta, newBalance));
+        return newBalance;
     }
 }

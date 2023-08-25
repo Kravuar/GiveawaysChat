@@ -1,7 +1,10 @@
 package net.kravuar.giveaways.domain.exceptions;
 
-public class GiveawayIsPrivateException extends RuntimeException{
-    public GiveawayIsPrivateException() {
-        super("giveaway.collection.is-private");
-    }
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
+public class GiveawayIsPrivateException extends RuntimeException {
+    private final String giveawayId;
 }

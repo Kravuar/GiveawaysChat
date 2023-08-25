@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 @Data
 public class GiveawayFormDTO {
     @Min(1)
-    private final Long amount;
+    private final Double amount;
     @Min(1)
     private final Long usages;
     @NotNull

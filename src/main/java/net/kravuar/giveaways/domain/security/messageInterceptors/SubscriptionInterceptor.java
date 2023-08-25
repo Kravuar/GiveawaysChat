@@ -3,7 +3,7 @@ package net.kravuar.giveaways.domain.security.messageInterceptors;
 import net.kravuar.giveaways.application.props.DestinationsProps;
 import net.kravuar.giveaways.application.services.SubscriptionService;
 import net.kravuar.giveaways.domain.exceptions.SubscriptionRequiredException;
-import net.kravuar.giveaways.domain.model.PrincipalWithId;
+import net.kravuar.giveaways.domain.model.user.PrincipalWithId;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -17,7 +17,7 @@ public class SubscriptionInterceptor implements ChannelInterceptor {
     private final SubscriptionService subscriptionService;
 
     public SubscriptionInterceptor(DestinationsProps destinationsProps, SubscriptionService subscriptionService) {
-        this.pattern = "/user/*/" + destinationsProps.getGiveawayAdded();
+        this.pattern = "/user/*/" + destinationsProps.getGiveaway();
         this.subscriptionService = subscriptionService;
     }
 

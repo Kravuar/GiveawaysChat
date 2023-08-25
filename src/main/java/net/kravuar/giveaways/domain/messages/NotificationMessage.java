@@ -3,7 +3,7 @@ package net.kravuar.giveaways.domain.messages;
 import lombok.Data;
 
 @Data
-public class UserFailedToSubscribeMessage {
-    private final String subscriptedId;
+public class NotificationMessage {
+    private final NotificationType type;
     private final String message;
 }

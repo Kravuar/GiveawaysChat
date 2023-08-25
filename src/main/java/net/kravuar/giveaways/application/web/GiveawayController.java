@@ -6,7 +6,7 @@ import net.kravuar.giveaways.application.props.ControllersProps;
 import net.kravuar.giveaways.application.services.GiveawayService;
 import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
 import net.kravuar.giveaways.domain.messages.GiveawayMessage;
-import net.kravuar.giveaways.domain.model.PrincipalWithId;
+import net.kravuar.giveaways.domain.model.user.PrincipalWithId;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;

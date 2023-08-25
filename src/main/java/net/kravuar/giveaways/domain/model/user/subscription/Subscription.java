@@ -1,8 +1,9 @@
-package net.kravuar.giveaways.domain.model;
+package net.kravuar.giveaways.domain.model.user.subscription;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.kravuar.giveaways.domain.model.user.User;
 
 import java.time.ZonedDateTime;
 
@@ -27,5 +28,5 @@ public class Subscription {
     private ZonedDateTime expirationTime;
 
     @Column(nullable = false)
-    private Long cost;
+    private Double cost;
 }

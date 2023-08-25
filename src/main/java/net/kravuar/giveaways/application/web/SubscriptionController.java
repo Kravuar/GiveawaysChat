@@ -2,7 +2,7 @@ package net.kravuar.giveaways.application.web;
 
 import lombok.RequiredArgsConstructor;
 import net.kravuar.giveaways.application.services.SubscriptionService;
-import net.kravuar.giveaways.domain.model.PrincipalWithId;
+import net.kravuar.giveaways.domain.model.user.PrincipalWithId;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

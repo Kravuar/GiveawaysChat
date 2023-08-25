@@ -1,9 +1,11 @@
-package net.kravuar.giveaways.domain.model;
+package net.kravuar.giveaways.domain.model.user;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.kravuar.giveaways.domain.model.giveaways.Giveaway;
+import net.kravuar.giveaways.domain.model.user.subscription.Subscription;
 import org.springframework.data.annotation.Id;
 
 import java.util.HashSet;
@@ -23,8 +25,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private Long balance = 0L;
-    private Long subscriptionCost = null;
+    private Double balance = 0D;
+    private Double subscriptionCost = null;
 
 //    TODO: Denormalize to contain count for: giveaways, subscribers, subscribed
 //    TODO: add the above to the UserDTO

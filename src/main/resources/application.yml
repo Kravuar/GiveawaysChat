@@ -14,3 +14,4 @@ app:
       notifications: "/topic/notification"
       giveaway-added: "/topic/giveaways"
       giveaway-collected: "/topic/giveaways/collected"
+      balance-updated: "/topic/account/balance-updated"

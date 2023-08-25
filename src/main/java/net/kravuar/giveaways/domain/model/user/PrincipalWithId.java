@@ -1,4 +1,4 @@
-package net.kravuar.giveaways.domain.model;
+package net.kravuar.giveaways.domain.model.user;
 
 import java.security.Principal;
 

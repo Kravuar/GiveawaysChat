@@ -1,8 +1,9 @@
-package net.kravuar.giveaways.domain.model;
+package net.kravuar.giveaways.domain.model.giveaways;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
+import net.kravuar.giveaways.domain.model.user.User;
 import org.springframework.data.annotation.Id;
 
 import java.time.ZonedDateTime;
@@ -28,7 +29,7 @@ public class Giveaway {
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
-    private Long amount;
+    private Double amount;
     @Column(nullable = false)
     private Long usages;
     @Column(nullable = false)

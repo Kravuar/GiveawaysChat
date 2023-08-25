@@ -1,17 +1,16 @@
 package net.kravuar.giveaways.application.services;
 
 import lombok.RequiredArgsConstructor;
-import net.kravuar.giveaways.application.props.DestinationsProps;
 import net.kravuar.giveaways.application.repo.GiveawayRepository;
 import net.kravuar.giveaways.domain.dto.GiveawayFormDTO;
+import net.kravuar.giveaways.domain.events.GiveawayCollected;
+import net.kravuar.giveaways.domain.events.GiveawayPublished;
 import net.kravuar.giveaways.domain.exceptions.GiveawayExhaustedException;
 import net.kravuar.giveaways.domain.exceptions.GiveawayIsPrivateException;
-import net.kravuar.giveaways.domain.messages.GiveawayCounterDecreaseMessage;
-import net.kravuar.giveaways.domain.messages.GiveawayMessage;
-import net.kravuar.giveaways.domain.messages.UserSuccessfullyCollectedGiveawayMessage;
-import net.kravuar.giveaways.domain.model.Giveaway;
-import net.kravuar.giveaways.domain.model.Subscription;
-import net.kravuar.giveaways.domain.model.User;
+import net.kravuar.giveaways.domain.model.giveaways.Giveaway;
+import net.kravuar.giveaways.domain.model.user.User;
+import net.kravuar.giveaways.domain.model.user.subscription.Subscription;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +21,7 @@ import java.util.Collection;
 @Transactional
 @RequiredArgsConstructor
 public class GiveawayService {
-    private final MessageService messageService;
-    private final DestinationsProps destinationsProps;
+    private final ApplicationEventPublisher publisher;
     private final GiveawayRepository giveawayRepository;
     private final UserService userService;
 
@@ -46,17 +44,7 @@ public class GiveawayService {
         var giveaway = new Giveaway(userService.getReferenceById(userId), giveawayFormDTO);
         giveaway = giveawayRepository.save(giveaway);
 
-        if (giveaway.getIsPrivate())
-            messageService.sendToUser(
-                    userId,
-                    destinationsProps.getGiveawayAdded(),
-                    new GiveawayMessage(giveaway)
-            );
-        else
-            messageService.send(
-                    destinationsProps.getGiveawayAdded(),
-                    new GiveawayMessage(giveaway)
-            );
+        publisher.publishEvent(new GiveawayPublished(giveaway));
     }
 
     public void collectByUser(String giveawayId, String userId) {
@@ -68,19 +56,10 @@ public class GiveawayService {
                 giveaway.setUsagesLeft(giveaway.getUsagesLeft() - 1);
                 giveaway.getCollected().add(user);
                 user.setBalance(user.getBalance() + giveaway.getAmount());
-                messageService.send(
-                        destinationsProps.getGiveawayCollected(),
-                        new GiveawayCounterDecreaseMessage(giveawayId)
-                );
-                messageService.sendToUser(
-                        userId,
-                        destinationsProps.getNotifications(),
-                        new UserSuccessfullyCollectedGiveawayMessage(giveawayId)
-                );
-            }
-            else
-                throw new GiveawayIsPrivateException();
+                publisher.publishEvent(new GiveawayCollected(userId, giveawayId));
+            } else
+                throw new GiveawayIsPrivateException(giveawayId);
         else
-            throw new GiveawayExhaustedException();
+            throw new GiveawayExhaustedException(giveawayId);
     }
 }

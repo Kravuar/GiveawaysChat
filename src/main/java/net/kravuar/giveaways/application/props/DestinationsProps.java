@@ -1,6 +1,5 @@
 package net.kravuar.giveaways.application.props;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -14,9 +13,13 @@ public class DestinationsProps {
     /*
      * Destination value for giveaway messages.
      * */
-    private String giveawayAdded;
+    private String giveaway;
     /*
      * Destination value for giveaway collection messages.
      * */
     private String giveawayCollected;
+    /*
+     * Destination value for balance messages.
+     * */
+    private String balanceUpdated;
 }
