@@ -28,7 +28,9 @@ public class GiveawayController {
     @GetMapping(value = {"/giveaways/{page}/{pageSize}", "/giveaways/{page}/"})
     public Collection<GiveawayMessage> findVisibleByPage(@AuthenticationPrincipal PrincipalWithId principal, @PathVariable Integer page, @PathVariable Optional<Integer> pageSize) {
         return giveawayService.findVisible(
-                principal.getId(),
+                principal != null
+                        ? principal.getId()
+                        : null,
                 PageRequest.of(page, pageSize.orElse(controllersProps.getPageSize()))
         ).stream()
                 .map(GiveawayMessage::new)

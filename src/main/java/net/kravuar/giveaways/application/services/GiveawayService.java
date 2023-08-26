@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Service
 @Transactional
@@ -26,12 +27,14 @@ public class GiveawayService {
     private final UserService userService;
 
     public Collection<Giveaway> findVisible(String userId, Pageable pageable) {
-        var user = userService.findByIdOrElseThrow(userId);
+        var user = userService.findById(userId);
 
-        var subscribedTo = user.getSubscriptions().stream()
-                .map(Subscription::getSubscriber)
-                .map(User::getId)
-                .toList();
+        var subscribedTo = user != null
+                ? user.getSubscriptions().stream()
+                    .map(Subscription::getSubscriber)
+                    .map(User::getId)
+                    .toList()
+                : Collections.<String>emptySet(); // Surely this won't affect query performance
         return giveawayRepository
                 .findAllByIsPrivateIsFalseOrOwnerIdIsIn(subscribedTo, pageable)
                 .getContent();

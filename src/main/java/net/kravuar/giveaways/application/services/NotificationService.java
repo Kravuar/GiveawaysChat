@@ -2,12 +2,8 @@ package net.kravuar.giveaways.application.services;
 
 import lombok.RequiredArgsConstructor;
 import net.kravuar.giveaways.application.props.DestinationsProps;
-import net.kravuar.giveaways.domain.events.BalanceUpdated;
-import net.kravuar.giveaways.domain.events.GiveawayPublished;
-import net.kravuar.giveaways.domain.events.GiveawayCollected;
-import net.kravuar.giveaways.domain.messages.BalanceUpdatedMessage;
-import net.kravuar.giveaways.domain.messages.GiveawayCounterDecreaseMessage;
-import net.kravuar.giveaways.domain.messages.GiveawayMessage;
+import net.kravuar.giveaways.domain.events.*;
+import net.kravuar.giveaways.domain.messages.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +47,25 @@ public class NotificationService {
                 destinationsProps.getBalanceUpdated(),
                 new BalanceUpdatedMessage(event.getDelta(), event.getNewBalance())
         );
+    }
+
+    @EventListener
+    public void handleSubscribed(Subscribed event) {
+        messageService.sendToUser(
+                event.getSubscriberId(),
+                destinationsProps.getSubscribed(),
+                new SubscriptionMessage(event.getSubscriptedId())
+        );
+//        TODO: notify subscripted as well
+    }
+
+    @EventListener
+    public void handleUnsubscribed(Unsubscribed event) {
+        messageService.sendToUser(
+                event.getSubscriberId(),
+                destinationsProps.getUnsubscribed(),
+                new SubscriptionMessage(event.getSubscriptedId())
+        );
+//        TODO: notify subscripted as well
     }
 }

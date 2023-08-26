@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 public class GiveawayMessage {
     private final String id;
     private final UserDTO owner;
-    private final Long amount;
+    private final Double amount;
     private final Long count;
     private final Boolean isPrivate;
     private final ZonedDateTime createdAt;

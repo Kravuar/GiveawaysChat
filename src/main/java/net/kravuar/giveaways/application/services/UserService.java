@@ -19,11 +19,15 @@ public class UserService {
 
     public User getReferenceById(String userId) { return userRepository.getReferenceById(userId); }
 
+    public User findById(String userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
     public User findByIdOrElseThrow(String userId) {
-        var user = userRepository.findById(userId);
-        if (user.isEmpty())
+        var user = findById(userId);
+        if (user == null)
             throw new ResourceNotFoundException("user", userId);
-        return user.get();
+        return user;
     }
 
     public Double updateBalance(String userId, Double delta) {

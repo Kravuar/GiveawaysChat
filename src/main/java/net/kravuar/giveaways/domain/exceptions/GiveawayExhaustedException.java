@@ -1,10 +1,18 @@
 package net.kravuar.giveaways.domain.exceptions;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
-public class GiveawayExhaustedException extends RuntimeException {
+public class GiveawayExhaustedException extends ResolvableRuntimeException {
     private final String giveawayId;
+
+    public GiveawayExhaustedException(String giveawayId) {
+        super("app.giveaway.collection.exhausted");
+        this.giveawayId = giveawayId;
+    }
+
+    @Override
+    public Object[] getArguments() {
+        return new Object[] {giveawayId};
+    }
 }

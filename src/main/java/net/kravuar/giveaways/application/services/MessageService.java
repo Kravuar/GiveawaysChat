@@ -16,9 +16,9 @@ public class MessageService {
         );
     }
 
-    public void sendToUser(String username, String destination, Object payload) {
+    public void sendToUser(String userId, String destination, Object payload) {
         template.convertAndSendToUser(
-                username,
+                userId,
                 destination,
                 payload
         );

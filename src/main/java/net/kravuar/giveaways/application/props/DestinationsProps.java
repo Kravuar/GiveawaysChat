@@ -22,4 +22,12 @@ public class DestinationsProps {
      * Destination value for balance messages.
      * */
     private String balanceUpdated;
+    /*
+     * Destination value for subscribed messages.
+     * */
+    private String subscribed;
+    /*
+     * Destination value for unsubscribed messages.
+     * */
+    private String unsubscribed;
 }

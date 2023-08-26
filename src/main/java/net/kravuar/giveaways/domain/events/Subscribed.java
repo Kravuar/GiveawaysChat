@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class Subscribed {
     private final String subscriberId;
     private final String subscriptedId;
+//    TODO: add period?
 }

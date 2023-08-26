@@ -31,7 +31,7 @@ public class SubscriptionInterceptor implements ChannelInterceptor {
                 var subscriberId = getCurrentUser().getId();
                 var subscriptedId = destination.split("[/.]")[1];
                 if (!subscriptionService.isSubscribedTo(subscriberId, subscriptedId))
-                    throw new SubscriptionRequiredException();
+                    throw new SubscriptionRequiredException(subscriptedId);
             }
         }
         return message;

@@ -12,6 +12,8 @@ app:
     allowed-origins: http://localhost:3000
     destinations:
       notifications: "/topic/notification"
-      giveaway-added: "/topic/giveaways"
+      giveaway: "/topic/giveaways"
       giveaway-collected: "/topic/giveaways/collected"
       balance-updated: "/topic/account/balance-updated"
+      subscribed: "/topic/account/subscribed"
+      unsubscribed: "/topic/account/unsubscribed"
