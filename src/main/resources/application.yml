@@ -17,3 +17,10 @@ app:
       balance-updated: "/topic/account/balance-updated"
       subscribed: "/topic/account/subscribed"
       unsubscribed: "/topic/account/unsubscribed"
+jwt-auth:
+  jwt:
+    issuer: giveaway-chat
+  http:
+    unauthenticated-servlets:
+      - "/auth/**"
+      - "placeholder"

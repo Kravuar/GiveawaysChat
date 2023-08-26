@@ -1,8 +1,16 @@
 package net.kravuar.giveaways.domain.model.user;
 
+import lombok.Data;
+
 import java.security.Principal;
 
-public interface PrincipalWithId extends Principal {
-//    TODO: Create authentication, which will use this principal
-    String getId();
+@Data
+public class PrincipalWithId implements Principal {
+    private final String id;
+    private final String username;
+
+    @Override
+    public String getName() {
+        return username;
+    }
 }
